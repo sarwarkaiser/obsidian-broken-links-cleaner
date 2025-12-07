@@ -3,7 +3,7 @@
   "name": "Broken Links Cleaner",
   "version": "1.0.0",
   "minAppVersion": "0.15.0",
-  "description": "Remove broken/empty wikilinks from your vault while keeping valid links intact",
+  "description": "Remove broken/empty wikilinks from your vault while keeping valid links intact.",
   "author": "Sarwar Kaiser",
   "authorUrl": "https://github.com/sarwarkaiser",
   "isDesktopOnly": false
