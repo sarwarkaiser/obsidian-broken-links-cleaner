@@ -35,7 +35,7 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 			id: 'clean-broken-links-current-file',
 			name: 'Clean broken links from current file',
 			editorCallback: (editor, view) => {
-				this.cleanCurrentFile(view.file);
+				void this.cleanCurrentFile(view.file);
 			}
 		});
 
@@ -510,8 +510,6 @@ class BrokenLinksCleanerSettingTab extends PluginSettingTab {
 		const { containerEl } = this;
 		containerEl.empty();
 
-		new Setting(containerEl).setName('Broken links cleaner settings').setHeading();
-
 		new Setting(containerEl)
 			.setName('Broken links file')
 			.setDesc('Path to the file containing the list of broken links')
@@ -535,7 +533,7 @@ class BrokenLinksCleanerSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName('How to use').setHeading();
 		containerEl.createEl('p', {
-			text: '1. Create a file listing all broken links (one per line in format: - [[Link Name]])'
+			text: '1. Create a file listing all broken links (one per line in format: - [[link name]])'
 		});
 		containerEl.createEl('p', {
 			text: '2. Set the path to that file in the setting above'
@@ -544,10 +542,10 @@ class BrokenLinksCleanerSettingTab extends PluginSettingTab {
 			text: '3. Use the ribbon icon or command palette to clean broken links'
 		});
 		containerEl.createEl('p', {
-			text: '4. Use "Find orphan files" to discover files with no incoming links'
+			text: '4. Use "find orphan files" to discover files with no incoming links'
 		});
 		containerEl.createEl('p', {
-			text: '5. Use "Find empty files" to discover completely empty files'
+			text: '5. Use "find empty files" to discover completely empty files'
 		});
 	}
 }
