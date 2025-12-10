@@ -108,9 +108,7 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 		// Extract [[Link]] from lines in multiple formats:
 		// - "- [[Link]] in [[File]]" (custom format)
 		// - "[[Link]]" (simple list)
-		// Also extract all [[links]] from the file
 		const listRegex = /^[\s-]*(\[\[[^\]]+\]\])/; // Matches "- [[Link]]" or "  - [[Link]]"
-		const allLinksRegex = /\[\[([^\]]+)\]\]/g; // Matches all [[links]] in a line
 
 		for (const line of lines) {
 			// First try the list format
@@ -176,7 +174,7 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 		}
 
 		const brokenLinks = await this.loadBrokenLinks();
-		console.log('Loaded broken links:', Array.from(brokenLinks));
+		console.debug('Loaded broken links:', Array.from(brokenLinks));
 
 		if (brokenLinks.size === 0) {
 			new Notice('No broken links loaded. Check your broken links file.');
@@ -291,7 +289,7 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 			existingFiles.add(file.name); // with .md
 		}
 
-		console.log(`Scanning ${files.length} files...`);
+		console.debug(`Scanning ${files.length} files...`);
 		let totalLinksChecked = 0;
 
 		// Scan all files
@@ -321,7 +319,7 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 			}
 		}
 
-		console.log(`Checked ${totalLinksChecked} links, found ${brokenLinksMap.size} broken`);
+		console.debug(`Checked ${totalLinksChecked} links, found ${brokenLinksMap.size} broken`);
 
 		if (brokenLinksMap.size === 0) {
 			new Notice(`No broken links found! (Checked ${totalLinksChecked} links)`);
@@ -362,7 +360,7 @@ class CleanupConfirmModal extends Modal {
 		const { contentEl } = this;
 		contentEl.empty();
 
-		contentEl.createEl('h2', { text: 'Clean Broken Links' });
+		new Setting(contentEl).setName('Clean broken links').setHeading();
 		contentEl.createEl('p', {
 			text: 'This will remove all broken links listed in your broken links file from all markdown files in your vault.'
 		});
@@ -379,12 +377,12 @@ class CleanupConfirmModal extends Modal {
 		});
 
 		const confirmButton = buttonContainer.createEl('button', {
-			text: 'Clean All Files',
+			text: 'Clean all files',
 			cls: 'mod-cta'
 		});
-		confirmButton.addEventListener('click', async () => {
+		confirmButton.addEventListener('click', () => {
 			this.close();
-			await this.plugin.cleanAllFiles();
+			void this.plugin.cleanAllFiles();
 		});
 	}
 
@@ -406,12 +404,14 @@ class OrphanFilesModal extends Modal {
 		const { contentEl } = this;
 		contentEl.empty();
 
-		contentEl.createEl('h2', { text: `Orphan Files (${this.files.length})` });
+		new Setting(contentEl).setName(`Orphan files (${this.files.length})`).setHeading();
 		contentEl.createEl('p', { text: 'These files have no incoming links from other notes:' });
 
 		const listEl = contentEl.createEl('ul', { cls: 'orphan-files-list' });
-		listEl.style.maxHeight = '400px';
-		listEl.style.overflowY = 'auto';
+		listEl.setCssProps({
+			'max-height': '400px',
+			'overflow-y': 'auto'
+		});
 
 		for (const file of this.files) {
 			listEl.createEl('li', { text: file.path });
@@ -419,9 +419,9 @@ class OrphanFilesModal extends Modal {
 
 		const buttonContainer = contentEl.createDiv({ cls: 'modal-button-container' });
 
-		const saveButton = buttonContainer.createEl('button', { text: 'Save to File', cls: 'mod-cta' });
-		saveButton.addEventListener('click', async () => {
-			await this.saveToFile();
+		const saveButton = buttonContainer.createEl('button', { text: 'Save to file', cls: 'mod-cta' });
+		saveButton.addEventListener('click', () => {
+			void this.saveToFile();
 		});
 
 		const closeButton = buttonContainer.createEl('button', { text: 'Close' });
@@ -457,12 +457,14 @@ class EmptyFilesModal extends Modal {
 		const { contentEl } = this;
 		contentEl.empty();
 
-		contentEl.createEl('h2', { text: `Empty Files (${this.files.length})` });
+		new Setting(contentEl).setName(`Empty files (${this.files.length})`).setHeading();
 		contentEl.createEl('p', { text: 'These files are completely empty:' });
 
 		const listEl = contentEl.createEl('ul', { cls: 'empty-files-list' });
-		listEl.style.maxHeight = '400px';
-		listEl.style.overflowY = 'auto';
+		listEl.setCssProps({
+			'max-height': '400px',
+			'overflow-y': 'auto'
+		});
 
 		for (const file of this.files) {
 			listEl.createEl('li', { text: file.path });
@@ -470,9 +472,9 @@ class EmptyFilesModal extends Modal {
 
 		const buttonContainer = contentEl.createDiv({ cls: 'modal-button-container' });
 
-		const saveButton = buttonContainer.createEl('button', { text: 'Save to File', cls: 'mod-cta' });
-		saveButton.addEventListener('click', async () => {
-			await this.saveToFile();
+		const saveButton = buttonContainer.createEl('button', { text: 'Save to file', cls: 'mod-cta' });
+		saveButton.addEventListener('click', () => {
+			void this.saveToFile();
 		});
 
 		const closeButton = buttonContainer.createEl('button', { text: 'Close' });
@@ -508,7 +510,7 @@ class BrokenLinksCleanerSettingTab extends PluginSettingTab {
 		const { containerEl } = this;
 		containerEl.empty();
 
-		containerEl.createEl('h2', { text: 'Broken Links Cleaner Settings' });
+		new Setting(containerEl).setName('Broken links cleaner settings').setHeading();
 
 		new Setting(containerEl)
 			.setName('Broken links file')
@@ -531,7 +533,7 @@ class BrokenLinksCleanerSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				}));
 
-		containerEl.createEl('h3', { text: 'How to use' });
+		new Setting(containerEl).setName('How to use').setHeading();
 		containerEl.createEl('p', {
 			text: '1. Create a file listing all broken links (one per line in format: - [[Link Name]])'
 		});
