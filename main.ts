@@ -17,7 +17,7 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 		await this.loadSettings();
 
 		// Add ribbon icon
-		this.addRibbonIcon('eraser', 'Clean Broken Links', () => {
+		this.addRibbonIcon('eraser', 'Clean broken links', () => {
 			this.showCleanupModal();
 		});
 
@@ -185,7 +185,7 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 		const cleaned = await this.cleanFile(file, brokenLinks);
 
 		if (cleaned) {
-			new Notice(`✓ Cleaned broken links from: ${file.name}`);
+			new Notice(`✓ cleaned broken links from: ${file.name}`);
 		} else {
 			new Notice(`No broken links found in: ${file.name}`);
 		}
@@ -210,7 +210,7 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 			}
 		}
 
-		new Notice(`✓ Cleaned ${cleanedCount} files out of ${files.length} total files`);
+		new Notice(`✓ cleaned ${cleanedCount} files out of ${files.length} total files`);
 	}
 
 	showCleanupModal() {
