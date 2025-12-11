@@ -333,7 +333,7 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 		}
 
 		// Generate the broken links file
-		let content = `# Broken Links Report\n\nGenerated: ${new Date().toLocaleString()}\nTotal broken links: ${brokenLinksMap.size}\nTotal links checked: ${totalLinksChecked}\n\n## Broken Links:\n\n`;
+		let content = `# Broken links report\n\nGenerated: ${new Date().toLocaleString()}\nTotal broken links: ${brokenLinksMap.size}\nTotal links checked: ${totalLinksChecked}\n\n## Broken links:\n\n`;
 
 		for (const [link, filesPaths] of brokenLinksMap) {
 			content += `- ${link} in ${filesPaths.map(p => `[[${p}]]`).join(', ')}\n`;
@@ -434,9 +434,9 @@ class OrphanFilesModal extends Modal {
 	}
 
 	async saveToFile() {
-		const content = `# Orphan Files Report\n\nGenerated: ${new Date().toLocaleString()}\nTotal: ${this.files.length} files\n\n## Files with no incoming links:\n\n${this.files.map(f => `- [[${f.basename}]] (${f.path})`).join('\n')}`;
+		const content = `# Orphan files report\n\nGenerated: ${new Date().toLocaleString()}\nTotal: ${this.files.length} files\n\n## Files with no incoming links:\n\n${this.files.map(f => `- [[${f.basename}]] (${f.path})`).join('\n')}`;
 
-		const fileName = `Orphan Files Report ${new Date().toISOString().split('T')[0]}.md`;
+		const fileName = `Orphan files report ${new Date().toISOString().split('T')[0]}.md`;
 		const existingFile = this.app.vault.getAbstractFileByPath(fileName);
 
 		if (existingFile instanceof TFile) {
@@ -491,9 +491,9 @@ class EmptyFilesModal extends Modal {
 	}
 
 	async saveToFile() {
-		const content = `# Empty Files Report\n\nGenerated: ${new Date().toLocaleString()}\nTotal: ${this.files.length} files\n\n## Empty Files:\n\n${this.files.map(f => `- [[${f.basename}]] (${f.path})`).join('\n')}`;
+		const content = `# Empty files report\n\nGenerated: ${new Date().toLocaleString()}\nTotal: ${this.files.length} files\n\n## Empty files:\n\n${this.files.map(f => `- [[${f.basename}]] (${f.path})`).join('\n')}`;
 
-		const fileName = `Empty Files Report ${new Date().toISOString().split('T')[0]}.md`;
+		const fileName = `Empty files report ${new Date().toISOString().split('T')[0]}.md`;
 		const existingFile = this.app.vault.getAbstractFileByPath(fileName);
 
 		if (existingFile instanceof TFile) {
