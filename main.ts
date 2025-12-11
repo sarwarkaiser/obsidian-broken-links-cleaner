@@ -329,7 +329,7 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 		}
 
 		// Generate the broken links file
-		let content = `# Broken Links Report\n\nGenerated: ${new Date().toLocaleString()}\nTotal broken links: ${brokenLinksMap.size}\nTotal links checked: ${totalLinksChecked}\n\n## Broken Links:\n\n`;
+		let content = `# Broken links report\n\nGenerated: ${new Date().toLocaleString()}\nTotal broken links: ${brokenLinksMap.size}\nTotal links checked: ${totalLinksChecked}\n\n## Broken links:\n\n`;
 
 		for (const [link, filesPaths] of brokenLinksMap) {
 			content += `- ${link} in ${filesPaths.map(p => `[[${p}]]`).join(', ')}\n`;
@@ -430,9 +430,9 @@ class OrphanFilesModal extends Modal {
 	}
 
 	async saveToFile() {
-		const content = `# Orphan Files Report\n\nGenerated: ${new Date().toLocaleString()}\nTotal: ${this.files.length} files\n\n## Files with no incoming links:\n\n${this.files.map(f => `- [[${f.basename}]] (${f.path})`).join('\n')}`;
+		const content = `# Orphan files report\n\nGenerated: ${new Date().toLocaleString()}\nTotal: ${this.files.length} files\n\n## Files with no incoming links:\n\n${this.files.map(f => `- [[${f.basename}]] (${f.path})`).join('\n')}`;
 
-		const fileName = `Orphan Files Report ${new Date().toISOString().split('T')[0]}.md`;
+		const fileName = `Orphan files report ${new Date().toISOString().split('T')[0]}.md`;
 		await this.app.vault.create(fileName, content);
 		new Notice(`Saved report to: ${fileName}`);
 		this.close();
@@ -480,9 +480,9 @@ class EmptyFilesModal extends Modal {
 	}
 
 	async saveToFile() {
-		const content = `# Empty Files Report\n\nGenerated: ${new Date().toLocaleString()}\nTotal: ${this.files.length} files\n\n## Empty Files:\n\n${this.files.map(f => `- [[${f.basename}]] (${f.path})`).join('\n')}`;
+		const content = `# Empty files report\n\nGenerated: ${new Date().toLocaleString()}\nTotal: ${this.files.length} files\n\n## Empty files:\n\n${this.files.map(f => `- [[${f.basename}]] (${f.path})`).join('\n')}`;
 
-		const fileName = `Empty Files Report ${new Date().toISOString().split('T')[0]}.md`;
+		const fileName = `Empty files report ${new Date().toISOString().split('T')[0]}.md`;
 		await this.app.vault.create(fileName, content);
 		new Notice(`Saved report to: ${fileName}`);
 		this.close();
@@ -510,7 +510,7 @@ class BrokenLinksCleanerSettingTab extends PluginSettingTab {
 			.setName('Report file path')
 			.setDesc('Path to the file containing the list of broken links')
 			.addText(text => text
-				.setPlaceholder('broken links output.md')
+				.setPlaceholder('Broken links output.md')
 				.setValue(this.plugin.settings.brokenLinksFile)
 				.onChange((value) => {
 					this.plugin.settings.brokenLinksFile = value;
@@ -538,10 +538,10 @@ class BrokenLinksCleanerSettingTab extends PluginSettingTab {
 			text: '3. Use the ribbon icon or command palette to clean broken links'
 		});
 		containerEl.createEl('p', {
-			text: '4. Use "find orphan files" to discover files with no incoming links'
+			text: '4. Use "Find orphan files" to discover files with no incoming links'
 		});
 		containerEl.createEl('p', {
-			text: '5. Use "find empty files" to discover completely empty files'
+			text: '5. Use "Find empty files" to discover completely empty files'
 		});
 	}
 }
