@@ -371,7 +371,7 @@ class CleanupConfirmModal extends Modal {
 			text: 'This will remove all broken links listed in your broken links file from all Markdown files in your vault.'
 		});
 		contentEl.createEl('p', {
-			text: '⚠️ This action cannot be undone. Make sure you have a backup!',
+			text: '⚠️ This action cannot be undone, make sure you have a backup!',
 			cls: 'mod-warning'
 		});
 
@@ -528,7 +528,7 @@ class BrokenLinksCleanerSettingTab extends PluginSettingTab {
 			.setName('Report file path')
 			.setDesc('Path to the file containing the list of broken links')
 			.addText(text => text
-				.setPlaceholder('broken links output.md')
+				.setPlaceholder('Broken links output.md')
 				.setValue(this.plugin.settings.brokenLinksFile)
 				.onChange((value) => {
 					this.plugin.settings.brokenLinksFile = value;
