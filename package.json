@@ -1,6 +1,6 @@
 {
   "name": "obsidian-broken-links-cleaner",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Obsidian plugin to remove broken/empty wikilinks from your vault",
   "main": "main.js",
   "scripts": {
@@ -13,7 +13,7 @@
     "broken-links",
     "cleanup"
   ],
-  "author": "Your Name",
+  "author": "Sarwar Kaiser",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^16.11.6",

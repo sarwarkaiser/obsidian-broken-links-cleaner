@@ -34,7 +34,7 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 		this.addCommand({
 			id: 'clean-broken-links-current-file',
 			name: 'Clean current file',
-			editorCallback: (editor, view) => {
+			editorCallback: (_editor, view) => {
 				void this.cleanCurrentFile(view.file);
 			}
 		});
@@ -108,22 +108,26 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 		const lines = content.split('\n');
 
 		// Extract [[Link]] from lines in multiple formats:
-		// - "- [[Link]] in [[File]]" (custom format)
+		// - "- [[Link]] in [[File]]" (custom format from scan report)
 		// - "[[Link]]" (simple list)
 		const listRegex = /^[\s-]*(\[\[[^\]]+\]\])/; // Matches "- [[Link]]" or "  - [[Link]]"
+		const reportFormatRegex = /^[\s-]*(\[\[[^\]]+\]\])\s+in\s+\[\[/; // Matches "- [[Link]] in [[File]]"
 
 		for (const line of lines) {
-			// First try the list format
-			const listMatch = line.match(listRegex);
-			if (listMatch) {
-				brokenLinksSet.add(listMatch[1]);
+			// Skip header lines and empty lines
+			if (line.trim().startsWith('#') || line.trim().length === 0) {
+				continue;
+			}
+
+			// Check if it's the "[[Link]] in [[File]]" format from scan report
+			const reportMatch = line.match(reportFormatRegex);
+			if (reportMatch) {
+				brokenLinksSet.add(reportMatch[1]);
 			} else {
-				// Extract all links from the line (for lines like "[[Link1]] in [[File1]]")
-				// Only take the first link (the broken one)
-				const firstLink = line.match(/\[\[([^\]]+)\]\]/);
-				if (firstLink && !line.includes(' in ')) {
-					// Only add if it's not part of "in [[File]]" reference
-					brokenLinksSet.add(`[[${firstLink[1]}]]`);
+				// Otherwise try simple list format "- [[Link]]"
+				const listMatch = line.match(listRegex);
+				if (listMatch) {
+					brokenLinksSet.add(listMatch[1]);
 				}
 			}
 		}
@@ -433,7 +437,14 @@ class OrphanFilesModal extends Modal {
 		const content = `# Orphan Files Report\n\nGenerated: ${new Date().toLocaleString()}\nTotal: ${this.files.length} files\n\n## Files with no incoming links:\n\n${this.files.map(f => `- [[${f.basename}]] (${f.path})`).join('\n')}`;
 
 		const fileName = `Orphan Files Report ${new Date().toISOString().split('T')[0]}.md`;
-		await this.app.vault.create(fileName, content);
+		const existingFile = this.app.vault.getAbstractFileByPath(fileName);
+
+		if (existingFile instanceof TFile) {
+			await this.app.vault.modify(existingFile, content);
+		} else {
+			await this.app.vault.create(fileName, content);
+		}
+
 		new Notice(`Saved report to: ${fileName}`);
 		this.close();
 	}
@@ -483,7 +494,14 @@ class EmptyFilesModal extends Modal {
 		const content = `# Empty Files Report\n\nGenerated: ${new Date().toLocaleString()}\nTotal: ${this.files.length} files\n\n## Empty Files:\n\n${this.files.map(f => `- [[${f.basename}]] (${f.path})`).join('\n')}`;
 
 		const fileName = `Empty Files Report ${new Date().toISOString().split('T')[0]}.md`;
-		await this.app.vault.create(fileName, content);
+		const existingFile = this.app.vault.getAbstractFileByPath(fileName);
+
+		if (existingFile instanceof TFile) {
+			await this.app.vault.modify(existingFile, content);
+		} else {
+			await this.app.vault.create(fileName, content);
+		}
+
 		new Notice(`Saved report to: ${fileName}`);
 		this.close();
 	}
