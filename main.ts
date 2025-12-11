@@ -360,7 +360,7 @@ class CleanupConfirmModal extends Modal {
 		const { contentEl } = this;
 		contentEl.empty();
 
-		new Setting(contentEl).setName('Clean broken links').setHeading();
+		new Setting(contentEl).setName('clean broken links').setHeading();
 		contentEl.createEl('p', {
 			text: 'This will remove all broken links listed in your broken links file from all markdown files in your vault.'
 		});
@@ -377,7 +377,7 @@ class CleanupConfirmModal extends Modal {
 		});
 
 		const confirmButton = buttonContainer.createEl('button', {
-			text: 'Clean all files',
+			text: 'clean all files',
 			cls: 'mod-cta'
 		});
 		confirmButton.addEventListener('click', () => {
@@ -419,7 +419,7 @@ class OrphanFilesModal extends Modal {
 
 		const buttonContainer = contentEl.createDiv({ cls: 'modal-button-container' });
 
-		const saveButton = buttonContainer.createEl('button', { text: 'Save to file', cls: 'mod-cta' });
+		const saveButton = buttonContainer.createEl('button', { text: 'save to file', cls: 'mod-cta' });
 		saveButton.addEventListener('click', () => {
 			void this.saveToFile();
 		});
@@ -472,7 +472,7 @@ class EmptyFilesModal extends Modal {
 
 		const buttonContainer = contentEl.createDiv({ cls: 'modal-button-container' });
 
-		const saveButton = buttonContainer.createEl('button', { text: 'Save to file', cls: 'mod-cta' });
+		const saveButton = buttonContainer.createEl('button', { text: 'save to file', cls: 'mod-cta' });
 		saveButton.addEventListener('click', () => {
 			void this.saveToFile();
 		});
@@ -511,8 +511,8 @@ class BrokenLinksCleanerSettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName('Broken links file')
-			.setDesc('Path to the file containing the list of broken links')
+			.setName('broken links file')
+			.setDesc('path to the file containing the list of broken links')
 			.addText(text => text
 				.setPlaceholder('broken links output.md')
 				.setValue(this.plugin.settings.brokenLinksFile)
@@ -522,8 +522,8 @@ class BrokenLinksCleanerSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('Delete text completely')
-			.setDesc('When enabled, removes the entire broken link. When disabled, keeps the text and only removes the [[ ]] brackets.')
+			.setName('delete text completely')
+			.setDesc('when enabled, removes the entire broken link; when disabled, keeps the text and only removes the [[ ]] brackets')
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.deleteText)
 				.onChange(async (value) => {
@@ -531,7 +531,7 @@ class BrokenLinksCleanerSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				}));
 
-		new Setting(containerEl).setName('How to use').setHeading();
+		new Setting(containerEl).setName('how to use').setHeading();
 		containerEl.createEl('p', {
 			text: '1. Create a file listing all broken links (one per line in format: - [[link name]])'
 		});
