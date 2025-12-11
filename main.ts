@@ -371,7 +371,7 @@ class CleanupConfirmModal extends Modal {
 
 		const buttonContainer = contentEl.createDiv({ cls: 'modal-button-container' });
 
-		const cancelButton = buttonContainer.createEl('button', { text: 'Cancel' });
+		const cancelButton = buttonContainer.createEl('button', { text: 'cancel' });
 		cancelButton.addEventListener('click', () => {
 			this.close();
 		});
@@ -424,7 +424,7 @@ class OrphanFilesModal extends Modal {
 			void this.saveToFile();
 		});
 
-		const closeButton = buttonContainer.createEl('button', { text: 'Close' });
+		const closeButton = buttonContainer.createEl('button', { text: 'close' });
 		closeButton.addEventListener('click', () => {
 			this.close();
 		});
@@ -477,7 +477,7 @@ class EmptyFilesModal extends Modal {
 			void this.saveToFile();
 		});
 
-		const closeButton = buttonContainer.createEl('button', { text: 'Close' });
+		const closeButton = buttonContainer.createEl('button', { text: 'close' });
 		closeButton.addEventListener('click', () => {
 			this.close();
 		});
