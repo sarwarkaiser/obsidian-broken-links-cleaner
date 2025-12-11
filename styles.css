@@ -1,0 +1,11 @@
+/* CSS for Broken Links Cleaner */
+
+.orphan-files-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.empty-files-list {
+    max-height: 400px;
+    overflow-y: auto;
+}

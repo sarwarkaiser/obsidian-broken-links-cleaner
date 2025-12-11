@@ -1,7 +1,7 @@
 {
   "id": "broken-links-cleaner",
   "name": "Broken Links Cleaner",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "minAppVersion": "0.15.0",
   "description": "Remove broken/empty wikilinks from your vault while keeping valid links intact.",
   "author": "Sarwar Kaiser",

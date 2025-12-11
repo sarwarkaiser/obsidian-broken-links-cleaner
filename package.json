@@ -1,6 +1,6 @@
 {
   "name": "obsidian-broken-links-cleaner",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Obsidian plugin to remove broken/empty wikilinks from your vault",
   "main": "main.js",
   "scripts": {

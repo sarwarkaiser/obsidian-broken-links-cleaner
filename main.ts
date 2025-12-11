@@ -24,7 +24,7 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 		// Add command
 		this.addCommand({
 			id: 'clean-broken-links',
-			name: 'Clean broken links from vault',
+			name: 'Clean vault',
 			callback: () => {
 				this.showCleanupModal();
 			}
@@ -33,7 +33,7 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 		// Add command to clean current file only
 		this.addCommand({
 			id: 'clean-broken-links-current-file',
-			name: 'Clean broken links from current file',
+			name: 'Clean current file',
 			editorCallback: (editor, view) => {
 				void this.cleanCurrentFile(view.file);
 			}
@@ -42,24 +42,26 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 		// Add command to show loaded broken links
 		this.addCommand({
 			id: 'show-broken-links',
-			name: 'Show detected broken links',
-			callback: async () => {
-				const brokenLinks = await this.loadBrokenLinks();
-				if (brokenLinks.size === 0) {
-					new Notice('No broken links detected in: ' + this.settings.brokenLinksFile);
-				} else {
-					const linksList = Array.from(brokenLinks).slice(0, 10).join('\n');
-					new Notice(`Detected ${brokenLinks.size} broken links:\n${linksList}\n${brokenLinks.size > 10 ? '...' : ''}`, 8000);
-				}
+			name: 'Show detected links',
+			callback: () => {
+				void (async () => {
+					const brokenLinks = await this.loadBrokenLinks();
+					if (brokenLinks.size === 0) {
+						new Notice('No broken links detected in: ' + this.settings.brokenLinksFile);
+					} else {
+						const linksList = Array.from(brokenLinks).slice(0, 10).join('\n');
+						new Notice(`Detected ${brokenLinks.size} broken links:\n${linksList}\n${brokenLinks.size > 10 ? '...' : ''}`, 8000);
+					}
+				})();
 			}
 		});
 
 		// Add command to find orphan files
 		this.addCommand({
 			id: 'find-orphan-files',
-			name: 'Find orphan files (no incoming links)',
-			callback: async () => {
-				await this.findOrphanFiles();
+			name: 'Find orphan files',
+			callback: () => {
+				void this.findOrphanFiles();
 			}
 		});
 
@@ -67,17 +69,17 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 		this.addCommand({
 			id: 'find-empty-files',
 			name: 'Find empty files',
-			callback: async () => {
-				await this.findEmptyFiles();
+			callback: () => {
+				void this.findEmptyFiles();
 			}
 		});
 
 		// Add command to scan for all broken links
 		this.addCommand({
 			id: 'scan-broken-links',
-			name: 'Scan vault and generate broken links file',
-			callback: async () => {
-				await this.scanAndGenerateBrokenLinks();
+			name: 'Scan vault and generate report',
+			callback: () => {
+				void this.scanAndGenerateBrokenLinks();
 			}
 		});
 
@@ -174,7 +176,7 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 		}
 
 		const brokenLinks = await this.loadBrokenLinks();
-		console.debug('Loaded broken links:', Array.from(brokenLinks));
+
 
 		if (brokenLinks.size === 0) {
 			new Notice('No broken links loaded. Check your broken links file.');
@@ -185,7 +187,7 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 		const cleaned = await this.cleanFile(file, brokenLinks);
 
 		if (cleaned) {
-			new Notice(`✓ cleaned broken links from: ${file.name}`);
+			new Notice(`Cleaned broken links from: ${file.name}`);
 		} else {
 			new Notice(`No broken links found in: ${file.name}`);
 		}
@@ -210,7 +212,7 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 			}
 		}
 
-		new Notice(`✓ cleaned ${cleanedCount} files out of ${files.length} total files`);
+		new Notice(`Cleaned ${cleanedCount} files out of ${files.length} total files`);
 	}
 
 	showCleanupModal() {
@@ -250,7 +252,7 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 		}
 
 		if (orphanFiles.length === 0) {
-			new Notice('No orphan files found!');
+			new Notice('No orphan files found.');
 		} else {
 			new OrphanFilesModal(this.app, orphanFiles).open();
 		}
@@ -270,7 +272,7 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 		}
 
 		if (emptyFiles.length === 0) {
-			new Notice('No empty files found!');
+			new Notice('No empty files found.');
 		} else {
 			new EmptyFilesModal(this.app, emptyFiles).open();
 		}
@@ -289,7 +291,7 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 			existingFiles.add(file.name); // with .md
 		}
 
-		console.debug(`Scanning ${files.length} files...`);
+
 		let totalLinksChecked = 0;
 
 		// Scan all files
@@ -319,10 +321,10 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 			}
 		}
 
-		console.debug(`Checked ${totalLinksChecked} links, found ${brokenLinksMap.size} broken`);
+
 
 		if (brokenLinksMap.size === 0) {
-			new Notice(`No broken links found! (Checked ${totalLinksChecked} links)`);
+			new Notice(`No broken links found. (Checked ${totalLinksChecked} links)`);
 			return;
 		}
 
@@ -360,9 +362,9 @@ class CleanupConfirmModal extends Modal {
 		const { contentEl } = this;
 		contentEl.empty();
 
-		new Setting(contentEl).setName('clean broken links').setHeading();
+		new Setting(contentEl).setName('Clean vault').setHeading();
 		contentEl.createEl('p', {
-			text: 'This will remove all broken links listed in your broken links file from all markdown files in your vault.'
+			text: 'This will remove all broken links listed in your broken links file from all Markdown files in your vault.'
 		});
 		contentEl.createEl('p', {
 			text: '⚠️ This action cannot be undone. Make sure you have a backup!',
@@ -371,13 +373,13 @@ class CleanupConfirmModal extends Modal {
 
 		const buttonContainer = contentEl.createDiv({ cls: 'modal-button-container' });
 
-		const cancelButton = buttonContainer.createEl('button', { text: 'cancel' });
+		const cancelButton = buttonContainer.createEl('button', { text: 'Cancel' });
 		cancelButton.addEventListener('click', () => {
 			this.close();
 		});
 
 		const confirmButton = buttonContainer.createEl('button', {
-			text: 'clean all files',
+			text: 'Clean all files',
 			cls: 'mod-cta'
 		});
 		confirmButton.addEventListener('click', () => {
@@ -407,11 +409,8 @@ class OrphanFilesModal extends Modal {
 		new Setting(contentEl).setName(`Orphan files (${this.files.length})`).setHeading();
 		contentEl.createEl('p', { text: 'These files have no incoming links from other notes:' });
 
+		// Use CSS class from styles.css
 		const listEl = contentEl.createEl('ul', { cls: 'orphan-files-list' });
-		listEl.setCssProps({
-			'max-height': '400px',
-			'overflow-y': 'auto'
-		});
 
 		for (const file of this.files) {
 			listEl.createEl('li', { text: file.path });
@@ -419,12 +418,12 @@ class OrphanFilesModal extends Modal {
 
 		const buttonContainer = contentEl.createDiv({ cls: 'modal-button-container' });
 
-		const saveButton = buttonContainer.createEl('button', { text: 'save to file', cls: 'mod-cta' });
+		const saveButton = buttonContainer.createEl('button', { text: 'Save to file', cls: 'mod-cta' });
 		saveButton.addEventListener('click', () => {
 			void this.saveToFile();
 		});
 
-		const closeButton = buttonContainer.createEl('button', { text: 'close' });
+		const closeButton = buttonContainer.createEl('button', { text: 'Close' });
 		closeButton.addEventListener('click', () => {
 			this.close();
 		});
@@ -460,11 +459,8 @@ class EmptyFilesModal extends Modal {
 		new Setting(contentEl).setName(`Empty files (${this.files.length})`).setHeading();
 		contentEl.createEl('p', { text: 'These files are completely empty:' });
 
+		// Use CSS class from styles.css
 		const listEl = contentEl.createEl('ul', { cls: 'empty-files-list' });
-		listEl.setCssProps({
-			'max-height': '400px',
-			'overflow-y': 'auto'
-		});
 
 		for (const file of this.files) {
 			listEl.createEl('li', { text: file.path });
@@ -472,12 +468,12 @@ class EmptyFilesModal extends Modal {
 
 		const buttonContainer = contentEl.createDiv({ cls: 'modal-button-container' });
 
-		const saveButton = buttonContainer.createEl('button', { text: 'save to file', cls: 'mod-cta' });
+		const saveButton = buttonContainer.createEl('button', { text: 'Save to file', cls: 'mod-cta' });
 		saveButton.addEventListener('click', () => {
 			void this.saveToFile();
 		});
 
-		const closeButton = buttonContainer.createEl('button', { text: 'close' });
+		const closeButton = buttonContainer.createEl('button', { text: 'Close' });
 		closeButton.addEventListener('click', () => {
 			this.close();
 		});
@@ -511,27 +507,27 @@ class BrokenLinksCleanerSettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName('broken links file')
-			.setDesc('path to the file containing the list of broken links')
+			.setName('Report file path')
+			.setDesc('Path to the file containing the list of broken links')
 			.addText(text => text
 				.setPlaceholder('broken links output.md')
 				.setValue(this.plugin.settings.brokenLinksFile)
-				.onChange(async (value) => {
+				.onChange((value) => {
 					this.plugin.settings.brokenLinksFile = value;
-					await this.plugin.saveSettings();
+					void this.plugin.saveSettings();
 				}));
 
 		new Setting(containerEl)
-			.setName('delete text completely')
-			.setDesc('when enabled, removes the entire broken link; when disabled, keeps the text and only removes the [[ ]] brackets')
+			.setName('Delete text completely')
+			.setDesc('When enabled, removes the entire broken link; when disabled, keeps the text and only removes the [[ ]] brackets')
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.deleteText)
-				.onChange(async (value) => {
+				.onChange((value) => {
 					this.plugin.settings.deleteText = value;
-					await this.plugin.saveSettings();
+					void this.plugin.saveSettings();
 				}));
 
-		new Setting(containerEl).setName('how to use').setHeading();
+		new Setting(containerEl).setName('How to use').setHeading();
 		containerEl.createEl('p', {
 			text: '1. Create a file listing all broken links (one per line in format: - [[link name]])'
 		});
