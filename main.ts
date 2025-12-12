@@ -371,7 +371,7 @@ class CleanupConfirmModal extends Modal {
 			text: 'This will remove all broken links listed in your broken links file from all Markdown files in your vault.'
 		});
 		contentEl.createEl('p', {
-			text: '⚠️ This action cannot be undone, make sure you have a backup!',
+			text: '⚠️ This action cannot be undone, so ensure you have a backup first!',
 			cls: 'mod-warning'
 		});
 
