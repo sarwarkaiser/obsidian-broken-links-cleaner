@@ -556,10 +556,10 @@ class BrokenLinksCleanerSettingTab extends PluginSettingTab {
 			text: '3. Use the ribbon icon or command palette to clean broken links'
 		});
 		containerEl.createEl('p', {
-			text: '4. Use "Find orphan files" to discover files with no incoming links'
+			text: '4. Use "find orphan files" to discover files with no incoming links'
 		});
 		containerEl.createEl('p', {
-			text: '5. Use "Find empty files" to discover completely empty files'
+			text: '5. Use "find empty files" to discover completely empty files'
 		});
 	}
 }
