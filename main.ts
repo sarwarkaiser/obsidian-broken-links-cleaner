@@ -181,7 +181,6 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 
 		const brokenLinks = await this.loadBrokenLinks();
 
-
 		if (brokenLinks.size === 0) {
 			new Notice('No broken links loaded. Check your broken links file.');
 			return;
@@ -295,7 +294,6 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 			existingFiles.add(file.name); // with .md
 		}
 
-
 		let totalLinksChecked = 0;
 
 		// Scan all files
@@ -324,8 +322,6 @@ export default class BrokenLinksCleanerPlugin extends Plugin {
 				}
 			}
 		}
-
-
 
 		if (brokenLinksMap.size === 0) {
 			new Notice(`No broken links found. (Checked ${totalLinksChecked} links)`);
@@ -556,10 +552,10 @@ class BrokenLinksCleanerSettingTab extends PluginSettingTab {
 			text: '3. Use the ribbon icon or command palette to clean broken links'
 		});
 		containerEl.createEl('p', {
-			text: '4. Use "find orphan files" to discover files with no incoming links'
+			text: '4. Use "Find orphan files" to discover files with no incoming links'
 		});
 		containerEl.createEl('p', {
-			text: '5. Use "find empty files" to discover completely empty files'
+			text: '5. Use "Find empty files" to discover completely empty files'
 		});
 	}
 }
